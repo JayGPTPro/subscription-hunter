@@ -24,7 +24,8 @@ The script does the finding and the math. You do the judgment.
 Typing `/subscription-hunter` alone is enough.
 - Files named in the request: use those.
 - No files named: use every bank or card statement in the current folder (`.csv`, `.xlsx`, `.pdf`). Skip what this skill writes: `recurring.json`, `verdicts.json`, `subscription-report.html`, `subscriptions.md`. Do not ask which files.
-- Only when the folder holds no statement files at all, ask exactly one question:
+- The user asks for made-up data (any words like "make up data", "sample data", "demo", "fake family", "not real data"): run `python3 <this skill folder>/scripts/make_sample_data.py .` It writes a year of made-up statements for a typical American family into the current folder (the usual leaks are planted on purpose). Say in one line that this is a made-up family, then continue with Step 1 on those two files. Never invent statements any other way, always this script. In this mode skip Step 1b (email) completely: made-up statements have nothing to do with the user's inbox.
+- Only when the folder holds no statement files at all, and the user did not ask for made-up data, ask exactly one question:
 
 > "Which statement files should I read? And is there anything on them you already know is fine?"
 
@@ -49,7 +50,7 @@ XLSX or PDF statement? Convert it to CSV first (read the sheet or extract the ta
 
 Decide this BEFORE any email tool call, in this order:
 1. The current folder has a file named `.no-email` (check with `ls -a`): skip this step completely and say nothing about email.
-2. The user said "files only" or "no email": skip it and say nothing about email.
+2. The user said "files only" or "no email", or asked for made-up data (Step 0): skip it and say nothing about email.
 3. No email tool is connected: skip it now, and add one short line to the chat answer in Step 5.
 4. Otherwise print exactly this line first, then search: "Also checking your email receipts. Add a file named .no-email to this folder to skip this."
 

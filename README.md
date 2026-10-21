@@ -27,6 +27,12 @@ npx skills add JayGPTPro/subscription-hunter -g
 
 3. Read the number. The full report opens in your browser.
 
+No statements handy? Try it on a made-up family first:
+
+```
+/subscription-hunter make up a year of data for a typical American family
+```
+
 With no file names, it reads every statement in the folder. If your email is connected, it also checks your receipts; to skip that, put an empty file named `.no-email` in the folder (or say "files only").
 
 ## What you get

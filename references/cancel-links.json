@@ -1,0 +1,698 @@
+{
+  "_readme": "Official cancel or manage pages for common US subscriptions. Matched to bank descriptors by alias. Only official domains. Each URL was fetched on the date in checked; status is the HTTP code after redirects (403/429/503 = the site blocks scripted checks, the page is real). url null = no reliable link, show the how text instead.",
+  "checked": "2026-10-21",
+  "services": [
+    {
+      "key": "netflix",
+      "name": "Netflix",
+      "aliases": [
+        "NETFLIX"
+      ],
+      "url": "https://www.netflix.com/cancelplan",
+      "kind": "cancel",
+      "status": 200,
+      "how": "Account > Cancel membership"
+    },
+    {
+      "key": "hulu",
+      "name": "Hulu",
+      "aliases": [
+        "HULU"
+      ],
+      "url": "https://secure.hulu.com/account",
+      "kind": "cancel",
+      "status": 406,
+      "how": "Account > Your Subscription > Cancel. If Hulu is part of a Disney+ bundle, cancel in the Disney+ account"
+    },
+    {
+      "key": "disney-plus",
+      "name": "Disney+",
+      "aliases": [
+        "DISNEYPLUS",
+        "DISNEY PLUS"
+      ],
+      "url": "https://www.disneyplus.com/account/subscription",
+      "kind": "cancel",
+      "status": 200,
+      "how": "Profile > Account > Subscription > Cancel subscription"
+    },
+    {
+      "key": "max",
+      "name": "Max (HBO Max)",
+      "aliases": [
+        "MAX COM",
+        "HBO MAX",
+        "HBOMAX"
+      ],
+      "url": "https://www.hbomax.com/subscription",
+      "kind": "cancel",
+      "status": 200,
+      "how": "Sign in > Subscription > Cancel Your Subscription"
+    },
+    {
+      "key": "paramount-plus",
+      "name": "Paramount+",
+      "aliases": [
+        "PARAMOUNTPLUS",
+        "PARAMOUNT PLUS",
+        "PARAMOUNT"
+      ],
+      "url": "https://help.paramountplus.com/s/article/PD-How-can-I-cancel-my-Paramount-subscription",
+      "kind": "help",
+      "status": 200,
+      "how": "Profile > Account > Subscription & Billing > Cancel subscription"
+    },
+    {
+      "key": "peacock",
+      "name": "Peacock",
+      "aliases": [
+        "PEACOCKTV",
+        "PEACOCK TV",
+        "PEACOCK"
+      ],
+      "url": "https://www.peacocktv.com/help/article/cancellation",
+      "kind": "help",
+      "status": 200,
+      "how": "Account > Plans & Payment > Cancel plan"
+    },
+    {
+      "key": "apple",
+      "name": "Apple subscriptions",
+      "aliases": [
+        "APPLE COM BILL",
+        "ITUNES",
+        "APPLE MUSIC",
+        "ICLOUD",
+        "APPLE TV",
+        "APPLE ONE"
+      ],
+      "url": "https://apps.apple.com/account/subscriptions",
+      "kind": "cancel",
+      "status": 200,
+      "how": "iPhone: Settings > your name > Subscriptions > pick one > Cancel Subscription"
+    },
+    {
+      "key": "youtube-premium",
+      "name": "YouTube Premium",
+      "aliases": [
+        "YOUTUBEPREMIUM",
+        "YOUTUBE PREMIUM",
+        "YOUTUBE MUSIC",
+        "YOUTUBEMUSIC"
+      ],
+      "url": "https://www.youtube.com/paid_memberships",
+      "kind": "cancel",
+      "status": 200,
+      "how": "youtube.com/paid_memberships > Manage membership > Deactivate > Continue to cancel"
+    },
+    {
+      "key": "youtube-tv",
+      "name": "YouTube TV",
+      "aliases": [
+        "YOUTUBE TV",
+        "YOUTUBETV"
+      ],
+      "url": "https://tv.youtube.com/cancel",
+      "kind": "cancel",
+      "status": 200,
+      "how": "Profile photo > Settings > Membership > Manage > Cancel membership"
+    },
+    {
+      "key": "spotify",
+      "name": "Spotify",
+      "aliases": [
+        "SPOTIFY"
+      ],
+      "url": "https://www.spotify.com/account/subscription/manage/",
+      "kind": "cancel",
+      "status": 200,
+      "how": "Account > Manage your plan > Cancel subscription"
+    },
+    {
+      "key": "amazon-prime",
+      "name": "Amazon Prime",
+      "aliases": [
+        "AMAZON PRIME",
+        "AMZN PRIME",
+        "PRIME VIDEO",
+        "PRIME MEMBERSHIP"
+      ],
+      "url": "https://www.amazon.com/mm/pipeline/cancellation",
+      "kind": "cancel",
+      "status": 200,
+      "how": "Account > Prime Membership > Manage > Update, cancel and more > End membership"
+    },
+    {
+      "key": "audible",
+      "name": "Audible",
+      "aliases": [
+        "AUDIBLE"
+      ],
+      "url": "https://www.audible.com/account/overview",
+      "kind": "cancel",
+      "status": 200,
+      "how": "Account details > Cancel membership"
+    },
+    {
+      "key": "kindle-unlimited",
+      "name": "Kindle Unlimited",
+      "aliases": [
+        "KINDLE UNLTD",
+        "KINDLE UNLIMITED"
+      ],
+      "url": "https://www.amazon.com/kindle-dbs/ku/ku-central",
+      "kind": "cancel",
+      "status": 200,
+      "how": "Account > Memberships & Subscriptions > Kindle Unlimited > Cancel"
+    },
+    {
+      "key": "google-one",
+      "name": "Google One",
+      "aliases": [
+        "GOOGLE ONE",
+        "GOOGLE STORAGE"
+      ],
+      "url": "https://one.google.com/settings",
+      "kind": "cancel",
+      "status": 200,
+      "how": "Settings > Manage membership > Cancel membership"
+    },
+    {
+      "key": "dropbox",
+      "name": "Dropbox",
+      "aliases": [
+        "DROPBOX",
+        "DBX CO BILL"
+      ],
+      "url": "https://www.dropbox.com/account/plan",
+      "kind": "cancel",
+      "status": 200,
+      "how": "Settings > Plan > Cancel plan"
+    },
+    {
+      "key": "microsoft-365",
+      "name": "Microsoft 365",
+      "aliases": [
+        "MICROSOFT 365",
+        "MSFT 365",
+        "OFFICE 365",
+        "MICROSOFT OFFICE"
+      ],
+      "url": "https://account.microsoft.com/services",
+      "kind": "cancel",
+      "status": 200,
+      "how": "Subscriptions > Microsoft 365 > Manage > Cancel subscription"
+    },
+    {
+      "key": "xbox-game-pass",
+      "name": "Xbox Game Pass",
+      "aliases": [
+        "XBOX GAME PASS",
+        "GAME PASS",
+        "GAMEPASS",
+        "XBOX LIVE",
+        "MICROSOFT ULTIMATE"
+      ],
+      "url": "https://account.microsoft.com/services",
+      "kind": "cancel",
+      "status": 200,
+      "how": "Subscriptions > Game Pass > Manage > Cancel subscription"
+    },
+    {
+      "key": "adobe",
+      "name": "Adobe",
+      "aliases": [
+        "ADOBE"
+      ],
+      "url": "https://account.adobe.com/plans",
+      "kind": "cancel",
+      "status": 200,
+      "how": "Plans > Manage plan > Cancel your plan"
+    },
+    {
+      "key": "canva",
+      "name": "Canva",
+      "aliases": [
+        "CANVA"
+      ],
+      "url": "https://www.canva.com/help/cancel-canva-plan/",
+      "kind": "help",
+      "status": 403,
+      "how": "Settings > Billing & plans > Cancel plan"
+    },
+    {
+      "key": "linkedin-premium",
+      "name": "LinkedIn Premium",
+      "aliases": [
+        "LINKEDIN"
+      ],
+      "url": "https://www.linkedin.com/psettings/premium-subscription",
+      "kind": "cancel",
+      "status": 200,
+      "how": "Me > Premium features > Manage Premium account > Cancel subscription"
+    },
+    {
+      "key": "nyt",
+      "name": "New York Times",
+      "aliases": [
+        "NYTIMES",
+        "NYT",
+        "NEW YORK TIMES"
+      ],
+      "url": "https://www.nytimes.com/account/subscription",
+      "kind": "cancel",
+      "status": 200,
+      "how": "Account > Subscription overview > Cancel your subscription"
+    },
+    {
+      "key": "wsj",
+      "name": "Wall Street Journal",
+      "aliases": [
+        "WSJ",
+        "WALL STREET JOURNAL",
+        "DOW JONES"
+      ],
+      "url": "https://customercenter.wsj.com/",
+      "kind": "cancel",
+      "status": 403,
+      "how": "Customer Center > Sign in > Subscriptions > Cancel subscription"
+    },
+    {
+      "key": "washington-post",
+      "name": "Washington Post",
+      "aliases": [
+        "WASHINGTON POST",
+        "WASHPOST",
+        "WAPO"
+      ],
+      "url": "https://helpcenter.washingtonpost.com/hc/en-us/articles/360000177571-How-to-cancel-your-digital-only-subscription",
+      "kind": "help",
+      "status": 403,
+      "how": "My Post > Account > Subscription > Cancel"
+    },
+    {
+      "key": "uber-one",
+      "name": "Uber One",
+      "aliases": [
+        "UBER ONE"
+      ],
+      "url": "https://help.uber.com/en/riders/article/how-do-i-cancel-my-uber-one-membership?nodeId=2748c138-d8b9-49a7-b6ee-3e2bb07bae28",
+      "kind": "help",
+      "status": 200,
+      "how": "Uber app > Account > Uber One > Manage Membership > End Membership"
+    },
+    {
+      "key": "doordash-dashpass",
+      "name": "DoorDash DashPass",
+      "aliases": [
+        "DASHPASS",
+        "DOORDASH DASHPASS"
+      ],
+      "url": "https://help.doordash.com/en-us/consumers/article/how-do-i-cancel-my-dashpass-subscription",
+      "kind": "help",
+      "status": 403,
+      "how": "Account > Manage DashPass > End subscription"
+    },
+    {
+      "key": "instacart-plus",
+      "name": "Instacart+",
+      "aliases": [
+        "INSTACART PLUS",
+        "INSTACART MEMBERSHIP",
+        "INSTACART SUBSCRIPTION",
+        "INSTACART EXPRESS"
+      ],
+      "url": "https://www.instacart.com/store/account/instacart-plus",
+      "kind": "cancel",
+      "status": 200,
+      "how": "Account > Instacart+ membership > Manage your membership > Cancel membership"
+    },
+    {
+      "key": "grubhub-plus",
+      "name": "Grubhub+",
+      "aliases": [
+        "GRUBHUBPLUS",
+        "GRUBHUB PLUS",
+        "GRUBHUB MEMBERSHIP",
+        "GRUBHUB SUBSCRIPTION"
+      ],
+      "url": null,
+      "kind": "cancel",
+      "status": null,
+      "how": "grubhub.com > menu next to your name > Grubhub+ > Cancel membership (app: Account > Grubhub+ membership > Manage Membership > Cancel)"
+    },
+    {
+      "key": "planet-fitness",
+      "name": "Planet Fitness",
+      "aliases": [
+        "PLANET FITNESS"
+      ],
+      "url": "https://www.planetfitness.com/my-account/membership",
+      "kind": "cancel",
+      "status": 403,
+      "how": "My Account > Membership > Cancel if offered. Otherwise cancel at your home club in person or by letter"
+    },
+    {
+      "key": "orangetheory",
+      "name": "Orangetheory",
+      "aliases": [
+        "ORANGETHEORY",
+        "ORANGE THEORY"
+      ],
+      "url": "https://www.orangetheory.com/en-us/cancellation-information",
+      "kind": "help",
+      "status": 200,
+      "how": "Cancellation Information page > submit request (30 day notice); your home studio confirms"
+    },
+    {
+      "key": "peloton",
+      "name": "Peloton",
+      "aliases": [
+        "PELOTON"
+      ],
+      "url": "https://www.onepeloton.com/mymembership",
+      "kind": "cancel",
+      "status": 200,
+      "how": "Membership > Cancel membership"
+    },
+    {
+      "key": "classpass",
+      "name": "ClassPass",
+      "aliases": [
+        "CLASSPASS"
+      ],
+      "url": "https://help.classpass.com/hc/en-us/articles/204578119-How-do-I-cancel-my-ClassPass-membership",
+      "kind": "help",
+      "status": 403,
+      "how": "Account > Settings > Cancel your membership (48 hours before renewal)"
+    },
+    {
+      "key": "norton",
+      "name": "Norton",
+      "aliases": [
+        "NORTONLIFELOCK",
+        "NORTON LIFELOCK",
+        "NORTON"
+      ],
+      "url": "https://my.norton.com/",
+      "kind": "cancel",
+      "status": 200,
+      "how": "Sign in > My Subscriptions > Automatic Renewal > Turn off"
+    },
+    {
+      "key": "mcafee",
+      "name": "McAfee",
+      "aliases": [
+        "MCAFEE"
+      ],
+      "url": "https://myaccount.mcafee.com/",
+      "kind": "cancel",
+      "status": 200,
+      "how": "Sign in > Subscriptions > Cancel > Cancel Auto-Renewal"
+    },
+    {
+      "key": "duolingo",
+      "name": "Duolingo Super",
+      "aliases": [
+        "DUOLINGO"
+      ],
+      "url": "https://www.duolingo.com/help/cancel-my-super-duolingo-subscription",
+      "kind": "help",
+      "status": 200,
+      "how": "Profile picture > Settings > Super Duolingo > Cancel subscription"
+    },
+    {
+      "key": "calm",
+      "name": "Calm",
+      "aliases": [
+        "CALM COM",
+        "CALM APP"
+      ],
+      "url": "https://www.calm.com/profile/manage-subscription",
+      "kind": "cancel",
+      "status": 200,
+      "how": "Profile icon > Settings > Manage Subscription > Cancel Subscription"
+    },
+    {
+      "key": "headspace",
+      "name": "Headspace",
+      "aliases": [
+        "HEADSPACE"
+      ],
+      "url": "https://www.headspace.com/subscription/manage",
+      "kind": "cancel",
+      "status": 200,
+      "how": "Sign in on the web > Subscription > Cancel membership"
+    },
+    {
+      "key": "chatgpt-plus",
+      "name": "ChatGPT Plus",
+      "aliases": [
+        "CHATGPT",
+        "OPENAI CHATGPT"
+      ],
+      "url": "https://help.openai.com/en/articles/7232927",
+      "kind": "help",
+      "status": 403,
+      "how": "chatgpt.com > profile icon > Settings > Billing > Cancel plan"
+    },
+    {
+      "key": "playstation-plus",
+      "name": "PlayStation Plus",
+      "aliases": [
+        "PLAYSTATION PLUS",
+        "PLAYSTATIONPLUS",
+        "PS PLUS",
+        "PLAYSTATION NETWORK"
+      ],
+      "url": "https://www.playstation.com/en-us/support/subscriptions/cancel-playstation-plus/",
+      "kind": "help",
+      "status": 200,
+      "how": "Account Management > Subscription > PlayStation Plus > Turn off auto-renew"
+    },
+    {
+      "key": "nintendo-switch-online",
+      "name": "Nintendo Switch Online",
+      "aliases": [
+        "NINTENDO SWITCH ONLINE",
+        "NINTENDO ONLINE",
+        "NINTENDO"
+      ],
+      "url": "https://en-americas-support.nintendo.com/app/answers/detail/a_id/41196/~/how-to-cancel-a-nintendo-switch-online-membership-or-adjust-auto-renewal",
+      "kind": "help",
+      "status": 200,
+      "how": "accounts.nintendo.com > Nintendo Switch Online > Cancel Your Pass by Turning Off Auto-Renewal"
+    },
+    {
+      "key": "costco",
+      "name": "Costco membership",
+      "aliases": [
+        "COSTCO ANNUAL",
+        "COSTCO MEMBERSHIP",
+        "COSTCO RENEWAL"
+      ],
+      "url": "https://customerservice.costco.com/app/answers/answer_view/a_id/1308/~/how-can-i-cancel-my-costco-membership",
+      "kind": "help",
+      "status": 401,
+      "how": "Any warehouse membership counter (instant refund) or call Costco Member Services"
+    },
+    {
+      "key": "walmart-plus",
+      "name": "Walmart+",
+      "aliases": [
+        "WALMART PLUS",
+        "WMT PLUS",
+        "WALMART MEMBERSHIP"
+      ],
+      "url": "https://www.walmart.com/help/article/manage-walmart-membership/126c9a990a944c3abd8531de52a87440",
+      "kind": "help",
+      "status": 200,
+      "how": "Account > Walmart+ > Manage membership > Manage (Walmart+ plan) > Cancel membership"
+    },
+    {
+      "key": "ring",
+      "name": "Ring",
+      "aliases": [
+        "RING YEARLY PLAN",
+        "RING MONTHLY PLAN",
+        "RING PROTECT",
+        "RING PLAN",
+        "RING COM"
+      ],
+      "url": "https://ring.com/support/articles/468y0/Canceling-your-Ring-plan",
+      "kind": "help",
+      "status": 200,
+      "how": "Sign in at ring.com > Plan > select the plan > Cancel. Download saved videos first"
+    },
+    {
+      "key": "siriusxm",
+      "name": "SiriusXM",
+      "aliases": [
+        "SIRIUSXM",
+        "SIRIUS XM"
+      ],
+      "url": "https://www.siriusxm.com/help/manage-or-cancel-service",
+      "kind": "help",
+      "status": 200,
+      "how": "Account > Manage subscription > Cancel, or use online chat"
+    },
+    {
+      "key": "hellofresh",
+      "name": "HelloFresh",
+      "aliases": [
+        "HELLOFRESH",
+        "HELLO FRESH"
+      ],
+      "url": "https://www.hellofresh.com/about/faq",
+      "kind": "help",
+      "status": 403,
+      "how": "Account Settings > Plan Settings > Cancel plan (by 11:59 pm PT, 5 days before next delivery)"
+    },
+    {
+      "key": "chewy-autoship",
+      "name": "Chewy Autoship",
+      "aliases": [
+        "CHEWY"
+      ],
+      "url": "https://www.chewy.com/customer-care/autoship/creating-or-updating-autoship/cancel-an-autoship",
+      "kind": "help",
+      "status": 200,
+      "how": "Account > Manage Autoship > select the Autoship > Cancel This Autoship"
+    },
+    {
+      "key": "barkbox",
+      "name": "BarkBox",
+      "aliases": [
+        "BARKBOX",
+        "BARK BOX"
+      ],
+      "url": "https://www.barkbox.com/account/dashboard",
+      "kind": "cancel",
+      "status": 403,
+      "how": "Account > Subscriptions > Cancel or turn off auto-renew"
+    },
+    {
+      "key": "abcmouse",
+      "name": "ABCmouse",
+      "aliases": [
+        "ABCMOUSE",
+        "AGE OF LEARNING"
+      ],
+      "url": "https://support.abcmouse.com/hc/en-us/articles/360047525934-Canceling-Your-ABCmouse-Classic-Subscription-Direct-Billing",
+      "kind": "help",
+      "status": 403,
+      "how": "Contact ABCmouse Customer Care with the account email and ask to cancel (no self-serve cancel)"
+    },
+    {
+      "key": "roblox-premium",
+      "name": "Roblox Premium",
+      "aliases": [
+        "ROBLOX"
+      ],
+      "url": "https://www.roblox.com/my/account",
+      "kind": "cancel",
+      "status": 200,
+      "how": "Settings > Subscriptions > Roblox Premium > Cancel renewal"
+    },
+    {
+      "key": "progressive",
+      "name": "Progressive (insurance)",
+      "aliases": [
+        "PROGRESSIVE INS",
+        "PROGRESSIVE INSURANCE",
+        "PROGRESSIVE"
+      ],
+      "url": "https://account.apps.progressive.com/access/login",
+      "kind": "manage",
+      "status": 200,
+      "how": "Log in > Policy > review coverage, or call to shop the rate"
+    },
+    {
+      "key": "verizon",
+      "name": "Verizon (My Verizon)",
+      "aliases": [
+        "VERIZON WIRELESS",
+        "VZWRLSS",
+        "VERIZON"
+      ],
+      "url": "https://secure.verizon.com/signin",
+      "kind": "manage",
+      "status": 418,
+      "how": "Sign in to My Verizon > Plan > Change plan or review add-ons"
+    },
+    {
+      "key": "spectrum",
+      "name": "Spectrum",
+      "aliases": [
+        "CHARTER COMMUNICATIONS",
+        "CHARTER COMM",
+        "SPECTRUM"
+      ],
+      "url": "https://www.spectrum.net/",
+      "kind": "manage",
+      "status": 200,
+      "how": "Sign in > Account Summary > Billing / Services"
+    },
+    {
+      "key": "choice-home-warranty",
+      "name": "Choice Home Warranty",
+      "aliases": [
+        "CHOICE HOME WARRANTY",
+        "CHOICE HOME WARR"
+      ],
+      "url": "https://www.choicehomewarranty.com/account-center/",
+      "kind": "manage",
+      "status": 200,
+      "how": "Customer Portal > Sign in > Contract details; cancellation is by phone or written request"
+    },
+    {
+      "key": "rocket-mortgage",
+      "name": "Rocket Mortgage",
+      "aliases": [
+        "ROCKET MORTGAGE",
+        "ROCKET MTG",
+        "QUICKEN LOANS"
+      ],
+      "url": "https://www.rocketmortgage.com/pre-sign?returnTo=https://rocket.com/mortgage/loan-router",
+      "kind": "manage",
+      "status": 403,
+      "how": "Sign in > Loan dashboard > Payments / Escrow"
+    },
+    {
+      "key": "toyota-financial",
+      "name": "Toyota Financial Services",
+      "aliases": [
+        "TOYOTA FINANCIAL",
+        "TOYOTA FIN SVCS",
+        "TOYOTA MOTOR CREDIT"
+      ],
+      "url": "https://www.toyotafinancial.com/dss/login",
+      "kind": "manage",
+      "status": 200,
+      "how": "Sign in > Account details > Payments"
+    },
+    {
+      "key": "google-play",
+      "name": "Google Play subscriptions",
+      "aliases": [
+        "GOOGLE PLAY",
+        "GOOGLE"
+      ],
+      "url": "https://play.google.com/store/account/subscriptions",
+      "kind": "cancel",
+      "status": 200,
+      "how": "Google Play > Payments & subscriptions > Subscriptions > pick one > Cancel subscription"
+    },
+    {
+      "key": "paypal",
+      "name": "PayPal automatic payments",
+      "aliases": [
+        "PAYPAL"
+      ],
+      "url": "https://www.paypal.com/us/cshelp/article/what-is-an-automatic-payment-and-how-do-i-update-or-cancel-one-help240",
+      "kind": "help",
+      "status": 200,
+      "how": "Settings > Payments > Manage automatic payments > pick the merchant > Cancel"
+    }
+  ]
+}

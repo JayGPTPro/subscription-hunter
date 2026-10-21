@@ -35,9 +35,11 @@ date +%Y-%m-%d   # today's real date, for --today
 python3 <this skill folder>/scripts/find_recurring.py <file1.csv> [<file2.csv> ...] --out recurring.json --today <YYYY-MM-DD>
 ```
 
-It reads any bank or card CSV (a CSV that is not a statement is skipped with a note), skips money coming in, card payments, transfers and ATM cash, and prints every recurring series with an id (S01, S02...), its schedule, cost now, cost per month, cost per year, what was actually paid in the last 12 months, and flags with their details (price from and to, duplicate date, start date, renewal date). One-off charges that look like a yearly plan get ids A01, A02... Series marked SAVING (college plans, savings, investing) are already left out of the spend total. For a weekly plan with skipped weeks, cost per month is the real pace. Everything else you need is in `recurring.json`.
+It reads any bank or card CSV (a CSV that is not a statement is skipped with a note), skips money coming in, card payments, transfers and ATM cash (English and Israeli bank descriptors), and prints every recurring series with an id (S01, S02...), its schedule, cost now, cost per month, cost per year, what was actually paid in the last 12 months, and flags with their details (price from and to, duplicate date, start date, renewal date). One-off charges that look like a yearly plan get ids A01, A02... Series marked SAVING (college plans, savings, investing) are already left out of the spend total. Series marked BILL (check) are paper checks: rent, a contractor, a school. Treat them as bills, never as subscriptions. For a weekly plan with skipped weeks, cost per month is the real pace. Everything else you need is in `recurring.json`.
 
 **What the scan did not call a series** is printed at the bottom as "Not on a schedule, but repeated" (the console shows only the first few; read the full list from `recurring.json` under `near_misses`): camps, clubs, seasonal fees, habits. Put the ones that look like a membership or a fee into Questions for you, with the numbers from that list. `recurring.json` has three lists: `recurring` (S ids), `possible_annual` (A ids), `near_misses`.
+
+**More than one currency** (say a shekel bank account and a dollar card): the scan reads the currency of each amount from a Currency column, a symbol in the amount (₪ € £ $) or a code in the file name (`..._ILS_...csv`), and USD when there is none of those. An "Original Currency" column is the merchant's currency, not the amount's, so it is ignored. Each currency gets its own table, its own totals (`by_currency` in `recurring.json`) and its own S ids, and every series carries its `currency`. Never add or compare amounts across currencies, and never convert one into the other. When there is more than one currency, the top-level `recurring_monthly_total` is empty on purpose. If the scan prints a currency WARNING (a currency it cannot read, or Hebrew descriptions in a file it read as USD), fix the file name or the Currency value and scan again before going on.
 
 Tell the user in two lines what you read: the files, the period, the number of transactions. If a file could not be read, say so before going further.
 
@@ -99,7 +101,7 @@ Run the total in code. Never add by hand.
 python3 <this skill folder>/scripts/find_recurring.py --total recurring.json --cancel S07,S14,S28 --refund S25
 ```
 
-`--cancel` takes the CANCEL ids, S or A (a yearly plan counts at its exact yearly amount). `--refund` takes the GET IT BACK ids. ASK, NEGOTIATE and DOWNGRADE items are not in the number: show them as "possible on top" without inventing what a negotiation will save.
+`--cancel` takes the CANCEL ids, S or A (a yearly plan counts at its exact yearly amount). `--refund` takes the GET IT BACK ids. ASK, NEGOTIATE and DOWNGRADE items are not in the number: show them as "possible on top" without inventing what a negotiation will save. With more than one currency it prints one block and one total per currency, and no grand total. Pass all the ids in one call.
 
 ## Step 5: The answer in chat (short)
 
@@ -111,6 +113,8 @@ The page carries the detail, so the chat stays short. This is your last message,
 [One line: the biggest single finding, in plain words.]
 The full report is open in your browser: [path to subscription-report.html]
 ```
+
+With more than one currency, the headline names each total in its own currency ("You can get back $288 and ₪1,200 this year"), and the last line lists one page per currency.
 
 Add one more line only if there are questions you need answered before the next hunt. If Step 1b found no email tool, add: "No email connected, so I used the statements only."
 
@@ -144,12 +148,20 @@ You write the words, a script writes the page. Write `verdicts.json` next to the
 - `message` (GET IT BACK): a short note ready to paste into support chat. `script` (NEGOTIATE, DOWNGRADE): two or three lines with the real old and new price from the flag. The script warns if those prices are missing.
 - Optional: `how` (a click path, shown when there is no official link) and `link` (a key from `references/cancel-links.json` to force a match, or `"none"`).
 - Only when Step 1b ran: `email_account` and `plan_from_email` on an item, and a top-level `found_in_email` list: `{"name", "plan", "price": 22.99, "cadence": "month" or "year", "date": "YYYY-MM-DD", "inbox", "why"}`. The Manage button always comes from the official links file, never from a link in an email. Leave these out otherwise; the page shows nothing about email without them.
+- More than one currency: write the prices in `why`, `message` and `script` in the item's own currency. A question or a `found_in_email` entry can be `{"currency": "ILS", "text": "..."}` (or carry `"currency"`) to sit on that currency's page only; a plain string shows on every page. `keeping` can be `{"USD": "...", "ILS": "..."}`.
 
 Then render and open:
 
 ```bash
 python3 <this skill folder>/scripts/render_report.py recurring.json verdicts.json --out subscription-report.html
 open subscription-report.html   # Windows: start, Linux: xdg-open
+```
+
+More than one currency: render one page per currency, and open each.
+
+```bash
+python3 <this skill folder>/scripts/render_report.py recurring.json verdicts.json --currency ILS --out subscription-report-ILS.html
+python3 <this skill folder>/scripts/render_report.py recurring.json verdicts.json --currency USD --out subscription-report-USD.html
 ```
 
 It prints the total. It must match Step 4. If it prints a WARNING, fix `verdicts.json` and run it again. Cancel buttons come only from `references/cancel-links.json` (official pages). A service with no entry gets its click path and a "Search how to cancel" link. Never hand-write or edit the HTML.

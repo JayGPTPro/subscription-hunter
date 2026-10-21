@@ -383,7 +383,8 @@ footer.foot svg{flex:none;margin-top:2px;color:var(--money)}
     var still=window.matchMedia&&window.matchMedia("(prefers-reduced-motion: reduce)").matches;
     if(el&&!still){
       var target=parseFloat(el.getAttribute("data-value"))||0, start=null, dur=1700;
-      var fmt=function(v){return "$"+v.toLocaleString("en-US",{minimumFractionDigits:2,maximumFractionDigits:2})};
+      var sym=el.getAttribute("data-symbol")||"$";
+      var fmt=function(v){return sym+v.toLocaleString("en-US",{minimumFractionDigits:2,maximumFractionDigits:2})};
       var step=function(ts){
         if(start===null)start=ts;
         var p=Math.min((ts-start)/dur,1), e=1-Math.pow(1-p,4);

@@ -2,7 +2,11 @@
 """Render subscription-report.html from recurring.json + verdicts.json.
 
 Usage:
-  python3 render_report.py recurring.json verdicts.json [--out subscription-report.html]
+  python3 render_report.py recurring.json verdicts.json [--out subscription-report.html] [--currency ILS]
+
+One page shows one currency. When recurring.json has more than one, run it once per currency
+with --currency, e.g. --currency ILS --out subscription-report-ILS.html. Shekels and dollars
+are never added into one number.
 
 recurring.json comes from find_recurring.py. verdicts.json is the only thing Claude writes:
 per id a verdict, a display name and a one-line why (schema in SKILL.md, Step 6).
@@ -28,7 +32,7 @@ from urllib.parse import quote_plus, urlparse
 HERE = Path(__file__).resolve().parent
 ROOT = HERE.parent
 sys.path.insert(0, str(HERE))
-from find_recurring import compute_total  # noqa: E402  (the one place the total is calculated)
+from find_recurring import compute_total, currency_of, norm_currency  # noqa: E402  (the one place the total is calculated)
 
 VERDICTS = ["CANCEL", "GET IT BACK", "NEGOTIATE", "DOWNGRADE", "ASK", "KEEP"]
 BUCKETS = {"subscription": "Subscription", "bill": "Bill", "saving": "Saving", "yearly": "Yearly"}
@@ -57,8 +61,12 @@ def esc(s):
     return html.escape(str(s if s is not None else ""), quote=True)
 
 
+SYMBOLS = {"USD": "$", "ILS": "₪", "EUR": "€", "GBP": "£", "CAD": "CA$", "AUD": "A$"}
+SYMBOL = "$"  # set per page in render()
+
+
 def money(x):
-    return f"${x:,.2f}"
+    return f"{SYMBOL}{x:,.2f}"
 
 
 def d(s):
@@ -213,7 +221,7 @@ def load_items(data, verdicts, links):
         flags = {f["flag"]: f for f in s["flags"]}  # one per kind; flag_list keeps repeats (duplicates)
         saving = s["bucket"] == "saving" or v.get("bucket") == "saving"
         verdict = (v.get("verdict") or ("KEEP" if saving else "")).upper().strip() or None
-        bucket = "saving" if saving else (v.get("bucket") or "subscription").lower()
+        bucket = "saving" if saving else (v.get("bucket") or ("bill" if s["bucket"] == "bill" else "subscription")).lower()
         items.append({
             "id": s["id"], "kind": "S", "merchant": s["merchant"], "descriptor": s.get("example_descriptor", ""),
             "name": v.get("name") or s["merchant"].title(), "verdict": verdict, "bucket": bucket,
@@ -258,12 +266,12 @@ def check_texts(items):
         if it["verdict"] in ("NEGOTIATE", "DOWNGRADE") and pi and it.get("script"):
             for p in (pi["from"], pi["to"]):
                 if f"{p:,.2f}" not in it["script"]:
-                    warn.append(f"{it['id']} {it['name']}: call script does not mention ${p:,.2f}")
+                    warn.append(f"{it['id']} {it['name']}: call script does not mention {money(p)}")
         if it["verdict"] == "GET IT BACK" and it.get("message"):
             dup = [f for f in it["flag_list"] if f.get("flag") == "duplicate_charge"]
             amt = round(sum(f["amount"] for f in dup), 2) if dup else it["amount"]
             if f"{amt:,.2f}" not in it["message"]:
-                warn.append(f"{it['id']} {it['name']}: refund message does not mention ${amt:,.2f}")
+                warn.append(f"{it['id']} {it['name']}: refund message does not mention {money(amt)}")
         if it["verdict"] in ("CANCEL", "GET IT BACK") and (it["stopped"] or it["saving_series"] or it["bucket"] == "saving"):
             why = "a series that already stopped" if it["stopped"] else "a saving series"
             warn.append(f"{it['id']} {it['name']}: {it['verdict']} on {why} adds money that is not really back. Use KEEP or ASK.")
@@ -341,13 +349,14 @@ def hero(data, items, t, cut_rows, refunds, cut_yearly):
                   f'{plural(len(neg), "bill")} worth a phone call.</p>')
     p0, p1 = d(data["period"][0]), d(data["period"][1])
     long_cls = " hero-num-long" if t["total"] >= 10000 else ""
+    sym_attr = f' data-symbol="{esc(SYMBOL)}"' if SYMBOL != "$" else ""
     return f'''
 <section class="hero" aria-label="The result">
   <div class="hero-glow" aria-hidden="true"></div>
   <div class="hero-main">
   <p class="hero-eyebrow">Subscription Hunt &middot; {esc(nice(p0))} to {esc(nice(p1))}</p>
   <p class="hero-kicker">You can get back</p>
-  <p class="hero-num{long_cls}"><span class="countup" data-value="{t['total']:.2f}">{money(t['total'])}</span></p>
+  <p class="hero-num{long_cls}"><span class="countup" data-value="{t['total']:.2f}"{sym_attr}>{money(t['total'])}</span></p>
   <p class="hero-kicker hero-kicker-after">this year</p>
   <p class="hero-lead">{lead}</p>
   {made_of}
@@ -646,6 +655,7 @@ def questions(items, extra):
   <div class="row-act">{link}</div>
 </li>''')
     for q in extra or []:
+        q = q.get("text", "") if isinstance(q, dict) else q
         lis.append(f'<li class="q q-text"><span class="q-icon" aria-hidden="true">?</span><div class="q-main"><p class="row-why">{esc(q)}</p></div></li>')
     if not lis:
         return ""
@@ -665,13 +675,17 @@ def found_in_email(entries, links):
         item = {"name": name, "svc": svc}
         btn = action_link(item, "Manage")  # official links file only; a link copied from an email is never used
         price = e.get("price")
+        # A receipt keeps its own currency: "₪49.90" on a dollar page stays ₪49.90.
+        sym = next((c for c in "$₪€£" if c in str(price or "")), None) or (
+            SYMBOLS.get(norm_currency(str(e["currency"])) or "") if e.get("currency") else None)
         try:
-            price = float(str(price).replace("$", "").replace(",", "")) if price not in (None, "") else None
+            price = float(re.sub(r"[$₪€£,\s]", "", str(price))) if price not in (None, "") else None
         except ValueError:
             pass
         per = {"monthly": "month", "yearly": "year", "annual": "year", "annually": "year", "weekly": "week"}.get(
             str(e.get("cadence") or "month").lower(), str(e.get("cadence") or "month"))
-        price_txt = f"{money(price)} a {per} on the receipt" if isinstance(price, float) else str(price or "")
+        shown = (f"{sym}{price:,.2f}" if sym else money(price)) if isinstance(price, float) else ""
+        price_txt = f"{shown} a {per} on the receipt" if shown else str(price or "")
         when = ""
         if e.get("date"):
             try:
@@ -754,12 +768,52 @@ def everything(items, today):
 
 # ---------- main ----------
 
-def render(recurring_path, verdicts_path, out_path, links_path):
+def for_currency(data, verdicts, currency):
+    """Keep only what belongs on this currency's page. Questions, email finds and the keeping line
+    may carry a "currency" to sit on one page; without one they show on every page."""
+    all_ids = {e["id"] for e in data["recurring"] + data["possible_annual"]}
+    unknown = [k for k in verdicts.get("items", {}) if k not in all_ids]
+    if unknown:
+        sys.exit(f"verdicts.json has id(s) that are not in recurring.json: {', '.join(unknown)}")
+    mine = lambda e: currency_of(e) == currency  # noqa: E731
+    data = dict(data, recurring=[s for s in data["recurring"] if mine(s)],
+                possible_annual=[a for a in data["possible_annual"] if mine(a)],
+                near_misses=[n for n in data.get("near_misses", []) if mine(n)])
+    sub = (data.get("by_currency") or {}).get(currency)
+    if sub:
+        data.update(period=sub["period"], transactions=sub["transactions"], files=sub["files"])
+    ids = {e["id"] for e in data["recurring"] + data["possible_annual"]}
+    cur_of = lambda c: norm_currency(str(c)) or str(c).upper()  # noqa: E731  ("NIS", "₪", "ils" -> ILS)
+    here = lambda e: not isinstance(e, dict) or not e.get("currency") or cur_of(e["currency"]) == currency  # noqa: E731
+    keep = verdicts.get("keeping")
+    if isinstance(keep, dict):
+        keep = {cur_of(k): v for k, v in keep.items()}
+    verdicts = dict(verdicts, items={k: v for k, v in verdicts.get("items", {}).items() if k in ids},
+                    questions=[q for q in verdicts.get("questions") or [] if here(q)],
+                    found_in_email=[e for e in verdicts.get("found_in_email") or [] if here(e)],
+                    keeping=keep.get(currency) if isinstance(keep, dict) else keep)
+    return data, verdicts
+
+
+def render(recurring_path, verdicts_path, out_path, links_path, currency=None):
+    global SYMBOL
     t0 = time.perf_counter()
     data = json.loads(Path(recurring_path).read_text(encoding="utf-8"))
     verdicts = json.loads(Path(verdicts_path).read_text(encoding="utf-8"))
     if isinstance(verdicts.get("questions"), str):
         verdicts["questions"] = [verdicts["questions"]]
+    curs = data.get("currencies") or sorted({currency_of(e) for e in data["recurring"] + data["possible_annual"]}) or ["USD"]
+    if currency:
+        currency = currency.upper()
+        if currency not in curs:
+            sys.exit(f"--currency {currency}: recurring.json only has {', '.join(curs)}")
+    elif len(curs) > 1:
+        sys.exit(f"recurring.json has {len(curs)} currencies ({', '.join(curs)}). They are never added together, "
+                 f"so render one page per currency, e.g. --currency {curs[0]} --out subscription-report-{curs[0]}.html")
+    else:
+        currency = curs[0]
+    data, verdicts = for_currency(data, verdicts, currency)
+    SYMBOL = SYMBOLS.get(currency, f"{currency} ")
     links = Links(links_path)
     items, missing = load_items(data, verdicts, links)
     today = d(data.get("today")) or d(data["period"][1])
@@ -793,7 +847,8 @@ def render(recurring_path, verdicts_path, out_path, links_path):
             f'Every number on this page comes from find_recurring.py ({esc(data.get("transactions", ""))} transactions in {esc(files)}). '
             f'Hunt date {esc(nice(today))}. Next hunt {esc(nice(add_month(today)))}.')
     tpl = (ROOT / "assets" / "report-template.html").read_text(encoding="utf-8")
-    fill = {"PERIOD": esc(f"{nice(p0)} to {nice(p1)}"), "NAV": nav_html, "BODY": body, "FOOTER": foot}
+    period = f"{nice(p0)} to {nice(p1)}" + (f" \u00b7 {currency}" if len(curs) > 1 else "")
+    fill = {"PERIOD": esc(period), "NAV": nav_html, "BODY": body, "FOOTER": foot}
     page = re.sub(r"\{\{(PERIOD|NAV|BODY|FOOTER)\}\}", lambda m: fill[m.group(1)], tpl)
     Path(out_path).write_text(page, encoding="utf-8")
     ms = (time.perf_counter() - t0) * 1000
@@ -801,7 +856,8 @@ def render(recurring_path, verdicts_path, out_path, links_path):
     print(f"Wrote {out_path} in {ms:.0f} ms")
     if links.missing:
         print(f"WARNING no cancel links file at {links_path}, so every button is a search link", file=sys.stderr)
-    print(f"TOTAL RECOVERABLE (first year): {t['total']:.2f}  (same compute_total as --total, "
+    tag = f" ({currency})" if len(curs) > 1 else ""
+    print(f"TOTAL RECOVERABLE (first year){tag}: {t['total']:.2f}  (same compute_total as --total, "
           f"cancel {','.join(cancel_ids) or '-'} refund {','.join(refund_ids) or '-'})")
     no_link = sorted({i["name"] for i in items if i["verdict"] == "CANCEL" and not (i.get("svc") or {}).get("url")})
     if no_link:
@@ -818,8 +874,9 @@ def main():
     ap.add_argument("verdicts")
     ap.add_argument("--out", default="subscription-report.html")
     ap.add_argument("--links", default=str(ROOT / "references" / "cancel-links.json"))
+    ap.add_argument("--currency", help="which currency this page shows (needed when recurring.json has several)")
     a = ap.parse_args()
-    render(a.recurring, a.verdicts, a.out, a.links)
+    render(a.recurring, a.verdicts, a.out, a.links, a.currency)
 
 
 if __name__ == "__main__":
